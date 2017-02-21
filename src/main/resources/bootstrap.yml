@@ -1,0 +1,4 @@
+spring:
+  application:
+    #make sure to provide a name in Jenkinsfile too.
+    name: dynamodbtemplate

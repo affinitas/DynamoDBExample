@@ -1,0 +1,17 @@
+# default profile: no config server, no Eureka, mocked/embedded dependencies
+server:
+  port: 8080
+
+#needed due to the aws services dependencies that requires
+# a region defined. See http://cloud.spring.io/spring-cloud-aws/spring-cloud-aws.html#_configuring_region
+cloud.aws.region.static: eu-west-1
+
+#skip aws init https://github.com/spring-cloud/spring-cloud-aws/issues/121#issuecomment-169089690
+cloud.aws.stack.auto: false
+cloud.aws.credentials.instanceProfile: false
+
+de:
+  affinitas:
+    environment: development
+    dynamoDB:
+      basePackage: de.affinitas

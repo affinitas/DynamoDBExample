@@ -1,0 +1,101 @@
+buildscript {
+	ext {
+        springBootVersion = "1.5.1.RELEASE"
+        springCloudVersion = "Camden.SR5"
+	}
+	repositories {
+		mavenCentral()
+		maven { url "https://repo.spring.io/snapshot" }
+		maven { url "https://repo.spring.io/milestone" }
+		maven { url "https://plugins.gradle.org/m2/" }
+		maven { url "https://repo.spring.io/libs-release-local" }
+		maven { url "https://repo.spring.io/libs-milestone-local" }
+		maven { url "https://repo.spring.io/libs-snapshot-local" }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath("io.spring.gradle:dependency-management-plugin:1.0.0.RELEASE")
+	}
+}
+
+apply plugin: "java"
+apply plugin: "eclipse"
+apply plugin: "idea"
+apply plugin: "maven"
+apply plugin: "application"
+apply plugin: "org.springframework.boot"
+apply plugin: "io.spring.dependency-management"
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-starter-parent:${springCloudVersion}"
+    }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+    maven { url "https://repo.spring.io/snapshot" }
+    maven { url "https://repo.spring.io/milestone" }
+    maven { url "https://repo.spring.io/libs-release-local" }
+    maven { url "https://repo.spring.io/libs-milestone-local" }
+    maven { url "https://repo.spring.io/libs-snapshot-local" }
+	maven { url "http://dynamodb-local.s3-website-us-west-2.amazonaws.com/release" }
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+    compile("org.springframework.boot:spring-boot-starter-logging")
+    compile("org.springframework.boot:spring-boot-starter-data-rest")
+    compile("com.github.derjust:spring-data-dynamodb:[4.4,4.5)")
+    compile("org.projectlombok:lombok:[1.16.10,2.0)")
+    compile("org.springframework.cloud:spring-cloud-aws-autoconfigure")
+    compile("org.springframework.boot:spring-boot-configuration-processor")
+    compile("com.amazonaws:aws-java-sdk-core:[1.11,2.0)")	//DynamoDBLocalrequires a newer version of aws-jdk than the one used by spring cloud.
+    compile("com.amazonaws:aws-java-sdk-dynamodb:[1.11,2.0)")
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile("com.amazonaws:DynamoDBLocal:[1.11,2.0)")
+}
+
+bootRun {
+    //http://stackoverflow.com/a/31328621/4985623
+    systemProperties System.properties
+}
+
+springBoot {
+    mainClass = "de.affinitas.Application"
+    executable = true
+}
+
+test {
+    //http://stackoverflow.com/a/31328621/4985623
+    systemProperties System.properties
+
+    // https://issues.gradle.org/browse/GRADLE-2860
+    systemProperties["user.dir"] = workingDir
+
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+// DynamoDB-local - Start
+//http://stackoverflow.com/questions/34401039/run-dynamodb-local-as-part-of-a-gradle-java-project
+task copyNativeDeps(type: Copy) {
+    from (configurations.testCompile) {
+        include "*.dylib"
+        include "*.so"
+        include "*.dll"
+    }
+    into "build/libs"
+}
+test.dependsOn copyNativeDeps
+
+test.doFirst {
+    systemProperty "java.library.path", "build/libs"
+    systemProperty "sqlite4java.library.path", "build/libs"
+}
+// DynamoDB-local - End
