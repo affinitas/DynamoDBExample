@@ -24,7 +24,7 @@ To configure the project, it is necessary to take into account these variables:
 
 | Variable             | Description  | Default value |
 |------------------|--------------|--------------|
-| cloud.aws.region.static: | Your AWS region| eu-west-1|
+| cloud.aws.region.static | Your AWS region| eu-west-1|
 | de.affinitas.dynamoDB.basePackage | The base package where Spring Data will search for your repositories | * |
 | de.affinitas.environment | Your current environment (to be used in table prefixing) | development |
 
@@ -33,7 +33,10 @@ To configure the project, it is necessary to take into account these variables:
 
 This project was created using Gradle (wrapper - which means you don´t need to install anything).
 
-To build it, just run the following command:
+To build it:
 
-``/gradlew clean build;``
+``/gradlew clean build``
 
+To run it:
+
+``/gradlew clean bootRun``
