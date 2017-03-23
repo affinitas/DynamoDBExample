@@ -1,8 +1,8 @@
-#DynamoDB example project
+# DynamoDB example project
 
 The present project is an example of Spring Boot one that makes use of Amazon DynamoDB as a persistence layer.
 
-##Features
+## Features
 
 The following features are enabled in this implementation:
 
@@ -11,7 +11,7 @@ The following features are enabled in this implementation:
 + Spring Data Rest
 + Table prefixing (for AWS single account support. For multi account setups, remove dynamoDBMapperConfigRef property in configuration classes).
 
-##Implementation and Configuration
+## Implementation and Configuration
 
 ###Enabling Spring Data Rest
 In order to enable Spring Data Rest support it was necessary to implement a DynamoDBMappingContext bean.
@@ -29,7 +29,7 @@ To configure the project, it is necessary to take into account these variables:
 | de.affinitas.environment | Your current environment (to be used in table prefixing) | development |
 
 
-##How to build it
+## How to build it
 
 This project was created using Gradle (wrapper - which means you don´t need to install anything).
 
